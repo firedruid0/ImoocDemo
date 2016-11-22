@@ -8,6 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  */
@@ -15,14 +24,15 @@ import android.widget.TextView;
 public class PieFragment extends Fragment {
 
     private static final String DATA_KEY = "pie_fragment_data_key";
-    private String mData;
+    private MonthBean mData;
+    private PieChart mChart;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
         if (arguments != null) {
-            mData = arguments.getString(DATA_KEY);
+            mData = arguments.getParcelable(DATA_KEY);
         }
     }
 
@@ -30,16 +40,31 @@ public class PieFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        TextView textView = new TextView(getContext());
-        textView.setText(mData);
-
-        return textView;
+        View inflate = inflater.inflate(R.layout.fragment_pie, null);
+        mChart = (PieChart) inflate.findViewById(R.id.pc_chart);
+        initView();
+        return inflate;
     }
 
-    public static PieFragment newInstance(String data) {
+    private void initView() {
+        setData();
+    }
+
+    private void setData() {
+        List<PieEntry> entrys = new ArrayList<>();
+        for (int i = 0; i < mData.obj.size(); i++) {
+            MonthBean.PieBean pieBean = mData.obj.get(i);
+            entrys.add(new PieEntry(pieBean.value, i));
+        }
+        IPieDataSet dataSet = new PieDataSet(entrys, "");
+        PieData pieData = new PieData(dataSet);
+        mChart.setData(pieData);
+    }
+
+    public static PieFragment newInstance(MonthBean data) {
         
         Bundle args = new Bundle();
-        args.putString(DATA_KEY, data);
+        args.putParcelable(DATA_KEY, data);
 
         PieFragment fragment = new PieFragment();
         fragment.setArguments(args);

@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         vpMain.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                return PieFragment.newInstance(mData.get(position).toString());
+                return PieFragment.newInstance(mData.get(position));
             }
 
             @Override
