@@ -5,13 +5,15 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ViewPager vpMain;
 
@@ -24,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
             "{\"date\":\"2016年8月\",\"obj\":[{\"title\":\"外卖\",\"value\":145}," +
             "{\"title\":\"娱乐\",\"value\":123},{\"title\":\"其他\",\"value\":124}]}]";
     private ArrayList<MonthBean> mData;
+    private Button btPre;
+    private Button btNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         vpMain = (ViewPager) findViewById(R.id.vp_main);
+        btPre = (Button) findViewById(R.id.bt_pre);
+        btNext = (Button) findViewById(R.id.bt_next);
+
+        btPre.setOnClickListener(this);
+        btNext.setOnClickListener(this);
+
         initData();
         initView();
     }
@@ -52,5 +62,20 @@ public class MainActivity extends AppCompatActivity {
                 return mData.size();
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.bt_next:
+                if (vpMain.getCurrentItem() != vpMain.getAdapter().getCount()){
+                    vpMain.setCurrentItem(vpMain.getCurrentItem()+1);
+                }
+                break;
+            case R.id.bt_pre:
+                if (vpMain.getCurrentItem() != 0){
+                    vpMain.setCurrentItem(vpMain.getCurrentItem()-1);
+                }
+        }
     }
 }

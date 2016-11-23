@@ -1,5 +1,6 @@
 package com.imooc.imoocpiechart;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,11 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +22,12 @@ import java.util.List;
  *
  */
 
-public class PieFragment extends Fragment {
+public class PieFragment extends Fragment implements OnChartValueSelectedListener {
 
     private static final String DATA_KEY = "pie_fragment_data_key";
     private MonthBean mData;
     private PieChart mChart;
+    private TextView tvDes;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,22 +44,32 @@ public class PieFragment extends Fragment {
 
         View inflate = inflater.inflate(R.layout.fragment_pie, null);
         mChart = (PieChart) inflate.findViewById(R.id.pc_chart);
+        tvDes = (TextView) inflate.findViewById(R.id.tv_des);
         initView();
         return inflate;
     }
 
     private void initView() {
         setData();
+        mChart.getLegend().setEnabled(false);
+        mChart.setDescription("");
+        mChart.setRotationEnabled(false);
+        mChart.setOnChartValueSelectedListener(this);
     }
 
     private void setData() {
-        List<PieEntry> entrys = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
+        List<Entry> entrys = new ArrayList<>();
         for (int i = 0; i < mData.obj.size(); i++) {
             MonthBean.PieBean pieBean = mData.obj.get(i);
-            entrys.add(new PieEntry(pieBean.value, i));
+            titles.add(pieBean.title);
+            entrys.add(new Entry(pieBean.value, i));
         }
-        IPieDataSet dataSet = new PieDataSet(entrys, "");
-        PieData pieData = new PieData(dataSet);
+        PieDataSet dataSet = new PieDataSet(entrys, "");
+        dataSet.setColors(new int[]{Color.rgb(216, 77, 719), Color.rgb(183, 56, 63), Color.rgb(247, 85, 47)});
+
+        PieData pieData = new PieData(titles, dataSet);
+        pieData.setValueTextSize(22);
         mChart.setData(pieData);
     }
 
@@ -69,5 +81,22 @@ public class PieFragment extends Fragment {
         PieFragment fragment = new PieFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+        float proportion = 360f/mData.getSum();
+        float angle = 90-mData.obj.get(e.getXIndex()).value*proportion/2-mData.getSum(e.getXIndex())*proportion;
+        mChart.setRotationAngle(angle);
+        updateDesText(e.getXIndex());
+    }
+
+    private void updateDesText(int index) {
+        tvDes.setText(mData.obj.get(index).title + ": " + mData.obj.get(index).value);
+    }
+
+    @Override
+    public void onNothingSelected() {
+
     }
 }

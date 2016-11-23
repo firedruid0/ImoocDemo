@@ -46,6 +46,25 @@ public class MonthBean implements Parcelable {
         parcel.writeString(date);
     }
 
+    public float getSum() {
+        float sum = 0;
+        for (PieBean pieBean : obj) {
+            sum += pieBean.value;
+        }
+        return sum;
+    }
+
+    public float getSum(int index) {
+        float sum = 0;
+        for (int i = 0; i < index; i++) {
+            sum += obj.get(i).value;
+        }
+        for (PieBean pieBean : obj) {
+            sum += pieBean.value;
+        }
+        return sum;
+    }
+
     public class PieBean {
         public String title;
         public int value;

@@ -35,6 +35,9 @@ dependencies {
     compile group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
 
     //https://github.com/PhilJay/MPAndroidChart
-    //compile 'com.github.PhilJay:MPAndroidChart:v2.2.3'
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.5'
+    //compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+
+    //百分百布局
+    compile 'com.android.support:percent:25.0.0'
 }
