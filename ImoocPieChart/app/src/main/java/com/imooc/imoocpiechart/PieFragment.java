@@ -4,6 +4,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,10 +55,21 @@ public class PieFragment extends Fragment implements OnChartValueSelectedListene
 
     private void initView() {
         setData();
+        mChart.setCenterText(getCenterText());
+        mChart.setDrawSliceText(false);
+        mChart.getData().getDataSet().setDrawValues(false);
         mChart.getLegend().setEnabled(false);
         mChart.setDescription("");
         mChart.setRotationEnabled(false);
         mChart.setOnChartValueSelectedListener(this);
+    }
+
+    private CharSequence getCenterText() {
+        CharSequence centerText = "总支出\n" + mData.getSum() + "元";
+        SpannableString spannableString = new SpannableString(centerText);
+        spannableString.setSpan(new ForegroundColorSpan(Color.rgb(178, 178,178)), 0, 3, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new AbsoluteSizeSpan(64, true), 3, centerText.length()-1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        return spannableString;
     }
 
     private void setData() {

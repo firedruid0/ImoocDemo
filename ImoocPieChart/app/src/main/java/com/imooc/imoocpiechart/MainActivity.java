@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return mData.size();
             }
         });
+        updateJumpText();
     }
 
     @Override
@@ -77,5 +78,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     vpMain.setCurrentItem(vpMain.getCurrentItem()-1);
                 }
         }
+        updateJumpText();
+    }
+
+    private void updateJumpText() {
+        if (vpMain.getCurrentItem() != vpMain.getAdapter().getCount()-1) {
+            btNext.setText(handleText(mData.get(vpMain.getCurrentItem()+1).date));
+        } else {
+            btNext.setText("没有了！");
+        }
+        if (vpMain.getCurrentItem() != 0) {
+            btPre.setText(handleText(mData.get(vpMain.getCurrentItem()-1).date));
+        } else {
+            btPre.setText("没有了！");
+        }
+    }
+
+    private CharSequence handleText(String date) {
+        return date.substring(date.indexOf("年")+1);
     }
 }
