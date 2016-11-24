@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.imooc.view.ViewPagerIndicator
+        android:id="@+id/id_indicatot"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@android:color/darker_gray"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="短信"
+            android:textSize="16dp"
+            android:textColor="#CCFFFFFF"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="收藏"
+            android:textSize="16dp"
+            android:textColor="#CCFFFFFF"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="推荐"
+            android:textSize="16dp"
+            android:textColor="#CCFFFFFF"
+            android:gravity="center"/>
+
+    </com.imooc.view.ViewPagerIndicator>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/id_viewpager"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+
+</LinearLayout>
