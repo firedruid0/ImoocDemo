@@ -19,7 +19,7 @@ public class MainActivity extends FragmentActivity {
     private ViewPagerIndicator mIndicator;
     private ViewPager mViewPager;
 
-    private List<String> mTitles = Arrays.asList("短信","收藏","推荐");
+    private List<String> mTitles = Arrays.asList("短信1","收藏2","推荐3", "短信4","收藏5","推荐6", "短信7","收藏8","推荐9");
     private List<VpSimpleFragment> mContents = new ArrayList<>();
     private FragmentPagerAdapter mAdapter;
 
@@ -34,6 +34,23 @@ public class MainActivity extends FragmentActivity {
         initDatas();
 
         mViewPager.setAdapter(mAdapter);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                mIndicator.scroll(position, positionOffset);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void initDatas() {
