@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -36,6 +37,7 @@ public class ViewPagerIndicator extends LinearLayout {
     private int mTriangleHeight;
 
     private static final float RADIO_TRIANGLE_WIDTH = 1/6f;
+    private final int DIMENSION_TRIANGLE_WIDTH_MAX = (int) (getScreenWidth() / 3 *RADIO_TRIANGLE_WIDTH);
 
     private int mInitTranslationX;
 
@@ -86,6 +88,7 @@ public class ViewPagerIndicator extends LinearLayout {
         super.onSizeChanged(w, h, oldw, oldh);
 
         mTriangleWidth = (int) (RADIO_TRIANGLE_WIDTH * w / mTabVisibleCount);
+        mTriangleWidth = Math.min(mTriangleWidth, DIMENSION_TRIANGLE_WIDTH_MAX);
         mInitTranslationX = w / mTabVisibleCount / 2 -mTriangleWidth / 2 ;
 
         initTriangle();
@@ -107,6 +110,8 @@ public class ViewPagerIndicator extends LinearLayout {
             lp.width = getScreenWidth()/mTabVisibleCount;
             view.setLayoutParams(lp);
         }
+
+        setItemClickEvent();
     }
 
     //获得屏幕宽度
@@ -153,10 +158,16 @@ public class ViewPagerIndicator extends LinearLayout {
             for (String title : mTitles) {
                 addView(genetageTextView(title));
             }
+            setItemClickEvent();
         }
     }
 
     private static final int COLOR_TEXT_NORMAL = 0x77ffffff;
+    private static final int COLOR_TEXT_HIGHLIGHT = 0xffffffff;
+
+    public void setVisibleTabCount(int count) {
+        mTabVisibleCount = count;
+    }
 
     private View genetageTextView(String title) {
         TextView tv = new TextView(getContext());
@@ -168,5 +179,83 @@ public class ViewPagerIndicator extends LinearLayout {
         tv.setTextColor(COLOR_TEXT_NORMAL);
         tv.setLayoutParams(lp);
         return tv;
+    }
+
+    private ViewPager mViewPager;
+
+    public interface PageOnchangeListener{
+
+        void onPageScrolled(int position, float positionOffset, int positionOffsetPixels);
+
+        void onPageSelected(int position);
+
+        void onPageScrollStateChanged(int state);
+    }
+
+    public PageOnchangeListener mListener;
+
+    public void setOnPageChangeListener(PageOnchangeListener listener) {
+        mListener = listener;
+    }
+
+    public void setViewPager(ViewPager viewPager, int pos) {
+        mViewPager = viewPager;
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                scroll(position, positionOffset);
+                if (mListener != null) {
+                    mListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (mListener != null) {
+                    mListener.onPageSelected(position);
+                }
+                highLightTextView(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (mListener != null) {
+                    mListener.onPageScrollStateChanged(state);
+                }
+            }
+        });
+        mViewPager.setCurrentItem(pos);
+        highLightTextView(pos);
+    }
+
+    private void resetTextViewColor(){
+        for (int i = 0; i < getChildCount(); i++) {
+            View view = getChildAt(i);
+            if (view instanceof TextView) {
+                ((TextView) view).setTextColor(COLOR_TEXT_NORMAL);
+            }
+        }
+    }
+
+    private void highLightTextView(int pos) {
+        resetTextViewColor();
+        View view = getChildAt(pos);
+        if (view instanceof TextView) {
+            ((TextView) view).setTextColor(COLOR_TEXT_HIGHLIGHT);
+        }
+    }
+
+    private void setItemClickEvent() {
+        int cCount = getChildCount();
+        for (int i = 0; i < cCount; i++) {
+            final int j = i;
+            View view = getChildAt(i);
+            view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mViewPager.setCurrentItem(j);
+                }
+            });
+        }
     }
 }
